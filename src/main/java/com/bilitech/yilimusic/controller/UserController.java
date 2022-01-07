@@ -25,6 +25,14 @@ public class UserController {
                 .map(userMapper::toVo).collect(Collectors.toList());
     }
 
+
+    @GetMapping("/hello")
+    public String sayhello(){
+
+        return "hello";
+    }
+
+
     @Autowired
     public void setUserMapper(UserMapper userMapper) {
         this.userMapper = userMapper;
