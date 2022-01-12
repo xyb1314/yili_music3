@@ -29,8 +29,8 @@ class UserRepositoryTest {
         user.setLastLoginIp("127.0.0.1");
         user.setLastLoginTime(new Date());
 
-        User savedUser = repository.save(user);
-        User result = repository.getByUsername("依力");
+        User savedUser = repository.save(user); // repository.save
+        User result = repository.getByUsernameAndGender("依力",Gender.MALE);
         System.out.println(result.toString());
 
     }

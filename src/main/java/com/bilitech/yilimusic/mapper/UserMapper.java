@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
-@Component
+@Component     //注入 要加 component
 public interface UserMapper {
   UserDto toDto(User user);
 

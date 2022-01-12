@@ -14,7 +14,7 @@ public class UserServiceImpl implements UserService {
 
     UserRepository repository;
 
-    UserMapper mapper;
+    UserMapper mapper; //转换时使用
 
 
     @Override
