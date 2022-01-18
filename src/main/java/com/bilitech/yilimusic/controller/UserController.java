@@ -44,20 +44,6 @@ public class UserController {
     @GetMapping("/hello")
     public String sayhello(){
 
-//        User user = new User();
-//        user.setUsername("admin");
-//
-//        user.setEnabled(true);
-//        user.setLocked(false);
-//        user.setPassword("9095155");
-//        user.setGender(Gender.MALE);
-//        user.setLastLoginIp("127.0.0.1");
-//        User savedUser = userRepository.save(user); // repository.save
-//
-//        //check the result in the terminal
-//        User result = userRepository.getByUsernameAndGender("admin",Gender.MALE);
-//        System.out.println(result.toString());
-
         return "hello";
     }
 
