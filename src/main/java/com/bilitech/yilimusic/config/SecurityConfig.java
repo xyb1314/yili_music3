@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                     .authorizeRequests()
-                    .antMatchers(HttpMethod.POST,SIGN_UP_URL).permitAll()  // 白名单 任何人 都可以注册
+//                    .antMatchers(HttpMethod.POST,SIGN_UP_URL).permitAll()  // 白名单 任何人 都可以注册
                     .anyRequest().authenticated()
                     .and()
                     .addFilter(new JwtAuthenticationFilter(authenticationManager()))        //password & username 鉴权

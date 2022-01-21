@@ -1,22 +1,21 @@
 package com.bilitech.yilimusic.service.impl;
 
-import com.bilitech.yilimusic.dto.UserCreateDto;
+import com.bilitech.yilimusic.dto.UserCreateRequest;
 import com.bilitech.yilimusic.dto.UserDto;
+import com.bilitech.yilimusic.dto.UserUpdateRequest;
 import com.bilitech.yilimusic.entity.User;
-import com.bilitech.yilimusic.enums.Gender;
 import com.bilitech.yilimusic.exception.BizException;
 import com.bilitech.yilimusic.exception.ExceptionType;
 import com.bilitech.yilimusic.mapper.UserMapper;
 import com.bilitech.yilimusic.repository.UserRepository;
 import com.bilitech.yilimusic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,17 +30,48 @@ public class UserServiceImpl implements UserService {
 
     PasswordEncoder passwordEncoder ;
 
+
+
     @Override
-    public List<UserDto> list() {
-        return repository.findAll()
-                .stream().map(mapper::toDto).collect(Collectors.toList());
+    public UserDto get(String id) {
+        Optional<User> user = repository.findById(id);
+        if (!user.isPresent()){
+            throw new BizException(ExceptionType.USER_NOT_FOUND);
+        }
+        return mapper.toDto(user.get());
     }
 
     @Override
-    public UserDto create(UserCreateDto userCreateDto) {
-        checkUserName(userCreateDto.getUsername());//check....
+    public UserDto update(String id, UserUpdateRequest userUpdateRequest) {
+        Optional<User> user = repository.findById(id);
+        if (!user.isPresent()){
+            throw new BizException(ExceptionType.USER_NOT_FOUND);
+        }
+        return mapper.toDto(repository.save(mapper.updateEntity(user.get(),userUpdateRequest)));
+    }
 
-        User user = mapper.createEntity(userCreateDto);
+    @Override
+    public void delete(String id) {
+
+        // todo: 重构
+        Optional<User> user = repository.findById(id);
+        if (!user.isPresent()){
+            throw new BizException(ExceptionType.USER_NOT_FOUND);
+        }
+
+        repository.delete(user.get());
+    }
+
+    @Override
+    public Page<UserDto> search(Pageable pageable) {
+      return repository.findAll(pageable).map(mapper::toDto) ;
+    }
+
+    @Override
+    public UserDto create(UserCreateRequest userCreateRequest) {
+        checkUserName(userCreateRequest.getUsername());//check....
+
+        User user = mapper.createEntity(userCreateRequest);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return mapper.toDto(  repository.save(user) );
 
@@ -66,17 +96,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Autowired
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+    private void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
     @Autowired
-    public void setMapper(UserMapper mapper) {
+    private void setMapper(UserMapper mapper) {
         this.mapper = mapper;
     }
 
     @Autowired
-    public void setRepository(UserRepository repository) {
+    private void setRepository(UserRepository repository) {
         this.repository = repository;
     }
 }
